@@ -2,11 +2,11 @@ package com.codecool;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.jtwig.JtwigModel;
+import org.jtwig.JtwigTemplate;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
+import java.io.OutputStream;
 
 public class AccountController implements HttpHandler {
 
@@ -19,22 +19,36 @@ public class AccountController implements HttpHandler {
         this.httpExchange = httpExchange;
 
         if (isGetMethod()) {
-            redirectIfUserLogged();
+//            redirectIfUserLogged();
+
             prepareStaticHtml();
         } else {
-            checkUserData();
+            handleData();
         }
+
+        sendResponse();
     }
 
-    private void prepareStaticHtml() throws FileNotFoundException {
-        Scanner sc = new Scanner(new File("html/loginPage.html"));
-        while (sc.hasNext()) {
-            response += sc.nextLine();
-        }
+    private void handleData() {
+
     }
+
+    private void prepareStaticHtml() {
+        JtwigTemplate jtwigTemplate = JtwigTemplate.classpathTemplate("templates/loginPage.twig");
+        JtwigModel jtwigModel = JtwigModel.newModel();
+        this.response = jtwigTemplate.render(jtwigModel);
+    }
+
 
     private boolean isGetMethod() {
         return httpExchange.getRequestMethod().equals("GET");
+    }
+
+    private void sendResponse() throws IOException {
+        httpExchange.sendResponseHeaders(200, response.length());
+        OutputStream os = httpExchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
     }
 
 
