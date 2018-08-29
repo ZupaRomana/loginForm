@@ -16,9 +16,10 @@ public class AccountController implements HttpHandler {
         this.httpExchange = httpExchange;
 
         if (isGetMethod()) {
+            redirectIfUserLogged();
             prepareStaticHtml();
         } else {
-            redirectToHelloUser();
+            checkUserData();
         }
     }
 }
