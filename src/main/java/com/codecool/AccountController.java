@@ -17,6 +17,7 @@ public class AccountController implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
+        DAOLogin daoLogin = new DAOLogin();
         this.response = "";
         this.httpExchange = httpExchange;
 
